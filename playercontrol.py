@@ -8,18 +8,12 @@ from gravity import Gravity
 
 
 
-
-
-
-
-
-
 idle = ['player/idle/1.png','player/idle/2.png']
 forward = ['player/playerforward.png','player/playerforward.png']
 up = ['player/playerup.png','player/playerforward.png']
 down = ['player/playerdown.png','player/playerforward.png']
 
-
+spritesizemod = 4
 
 
 class Player(pygame.sprite.Sprite):
@@ -54,7 +48,7 @@ class Player(pygame.sprite.Sprite):
         print(self.direction[self.spritestate])
         self.image = pygame.image.load(self.direction[self.spritestate])
         self.image = pygame.transform.flip(self.image,self.flip,0)
-        self.image = pygame.transform.scale(self.image,(51,75))
+        self.image = pygame.transform.scale(self.image,(self.image.get_width()*spritesizemod,self.image.get_height()*spritesizemod))
 
         print(self.spritestate)
         self.spritestate = self.spritestate + 1

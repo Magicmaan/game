@@ -22,9 +22,11 @@ class game:
     def refresh():
         pygame.display.flip()
         pygame.display.update()
-    
+
+WindowY = 500
+WindowX = WindowY * 1.77
 # Set the window size
-window_size = (1000, 600)
+window_size = (WindowX, WindowY)
 window = pygame.display.set_mode(window_size)
 window.fill("white")
 
