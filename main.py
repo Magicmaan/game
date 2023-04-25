@@ -7,42 +7,49 @@ Created on Sat Apr 22 19:39:06 2023
 
 import pygame
 import random
-import time
 from playercontrol import Player as Playerclass
+from floorcontrol import Floor
+from game import gameClass
+from initiategame import initiateClass
+from collision import collision
 
 
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
-random.seed(1111)
 pygame.display.set_caption("Space invaders but its horizontal with Portal assets :| turn sound on")
-clock = pygame.time.Clock()
 
-class game:
-    def refresh():
-        pygame.display.flip()
-        pygame.display.update()
 
-WindowY = 500
-WindowX = WindowY * 1.77
+
+
+WindowX = 800
+WindowY = round(WindowX / 1.333)
+print(WindowY)
 # Set the window size
 window_size = (WindowX, WindowY)
 window = pygame.display.set_mode(window_size)
-window.fill("white")
+tick = 0
 
-print(window.get_height())
-player = Playerclass(50,50,0,0,window)
+
+    
+initiate = initiateClass()
+
+
+player = initiate.player
+floorgroup = initiate.floorgroup
+playergroup = initiate.playergroup
+collision = collision(initiate)
 
 while True:
-    # Handle events
     window.fill("white")
     
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
+    # Handle events
     
     
+   
+    
+    
+    #key inputs of player, passes in velocity multiply amount
     keys = pygame.key.get_pressed()
     if keys[pygame.K_d]:
         player.playervelocity(1,0)   
@@ -50,23 +57,25 @@ while True:
         player.playervelocity(-1,0)
     if keys[pygame.K_SPACE]:
         player.playervelocity(0,-0.7)
+    if keys[pygame.K_LCTRL]:
+        player.playervelocity(0,1)
 
+    #updates floor and player
+    floorgroup.draw(window)
+    floorgroup.update()
     
-    #player.update()
     player.update()
     player.draw()
-    
-    clockfps = 18
-    #sets framerate
-    ft = clock.tick(clockfps) / 1000
+
     
     
+    
+    #updates and displays monitor
+    pygame.display.update()
     pygame.display.flip()
-    
-    
     #game.refresh()
-    
-    
+    tick = gameClass.gametime()
+
     
     
     
