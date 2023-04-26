@@ -17,20 +17,16 @@ class initiateClass:
 
         
         self.player = Playerclass(0,0,0,0,surface)
-        self.allsprite = pygame.sprite.Group()
-        self.allsprite.add(self.player)
-        
-        
         self.playergroup.add(self.player)
-        self.playergroup = self.player.image.get_rect()
         
         
-        floor = Floor()
-        self.floorgroup = floor.floorgroupsetup()
         
-        return
+        self.floorgroup = pygame.sprite.Group()
+        for x in range(0,10):
+            temp = Floor(0,300)
+            temp.position = (x*80,510)
+            self.floorgroup.add(temp)
+        
     
-    def update(self):
-        self.playergroup = self.player.image.get_rect()
-        self.floorgroup = self.floorgroup.image.get_rect()
+
         

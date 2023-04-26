@@ -46,6 +46,7 @@ class Player(pygame.sprite.Sprite):
         
         
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
 
     
     def image_update(self):
@@ -98,7 +99,8 @@ class Player(pygame.sprite.Sprite):
             self.spritestate += 1
         
         #updates rect to match sprite
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(),self.image.get_height())
+        
 
         
         
@@ -146,6 +148,7 @@ class Player(pygame.sprite.Sprite):
         self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1]) 
         self.velocity,self.onground = self.Gravity.gravitytick(self)
         self.crouching = False
+        self.mask = pygame.mask.from_surface(self.image)
         
         
         

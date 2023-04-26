@@ -38,7 +38,9 @@ initiate = initiateClass()
 player = initiate.player
 floorgroup = initiate.floorgroup
 playergroup = initiate.playergroup
-collision = collision(initiate)
+
+#collision = collision(initiate)
+
 
 while True:
     window.fill("white")
@@ -66,7 +68,11 @@ while True:
     
     player.update()
     player.draw()
-
+    rects = []
+    for x in floorgroup:
+        print(x.rect)
+    print(pygame.sprite.spritecollide(player,initiate.floorgroup,False))
+   # print(pygame.sprite.spritecollide(player,floorgroup,False))
     
     
     

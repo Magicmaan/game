@@ -17,7 +17,7 @@ class Gravity:
         
         #temporary
         global height
-        height = 520
+        height = 620
     
     def gravitytick(self,subject):
         #pygame.draw.rect(subject.surface,'green',(0,height,800,2))
