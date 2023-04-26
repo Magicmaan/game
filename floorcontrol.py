@@ -21,9 +21,9 @@ class Floor(pygame.sprite.Sprite):
         self.surface = pygame.display.get_surface()
         
         ss = spritesheet.spritesheet('textures/tiles/floor.png',self.surface)
-        self.image = ss.image_at((0,0,32,32))
+        self.image = ss.image_at((0,0,288,96))
         #sets scale to be consistent no matter resolution
-        self.image = pygame.transform.scale(self.image,((self.surface.get_width()/10),(self.surface.get_width()/10)))
+        #self.image = pygame.transform.scale(self.image,((self.surface.get_width()/10),(self.surface.get_width()/10)))
         
         #sets rectangle for collision
         self.rect = self.image.get_rect()
@@ -49,6 +49,6 @@ class Floor(pygame.sprite.Sprite):
     
     def update(self):
         self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(),self.image.get_height())
-        #self.surface.blit(self.image,(600,600))
+        
         
 

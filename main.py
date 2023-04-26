@@ -39,7 +39,7 @@ player = initiate.player
 floorgroup = initiate.floorgroup
 playergroup = initiate.playergroup
 
-#collision = collision(initiate)
+
 
 
 while True:
@@ -58,21 +58,22 @@ while True:
     if keys[pygame.K_a]:
         player.playervelocity(-1,0)
     if keys[pygame.K_SPACE]:
-        player.playervelocity(0,-0.7)
+        player.playervelocity(0,-1)
     if keys[pygame.K_LCTRL]:
         player.playervelocity(0,1)
 
     #updates floor and player
-    floorgroup.draw(window)
+    
     floorgroup.update()
+    floorgroup.draw(window)
+    
+    
     
     player.update()
     player.draw()
-    rects = []
-    for x in floorgroup:
-        print(x.rect)
-    print(pygame.sprite.spritecollide(player,initiate.floorgroup,False))
-   # print(pygame.sprite.spritecollide(player,floorgroup,False))
+    
+    
+    #print(pygame.sprite.spritecollide(player,floorgroup,False))
     
     
     

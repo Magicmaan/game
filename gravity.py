@@ -6,20 +6,23 @@ Created on Sat Apr 22 19:39:06 2023
 """
 import pygame
 
-
+height = 300
 
 class Gravity:
     def __init__ (self):
         self.surface = pygame.display.get_surface()
         #sets gravity value, consistent across resolution
         self.gravity =  self.surface.get_height()/27
-        #27
-        
-        #temporary
-        global height
-        height = 620
     
-    def gravitytick(self,subject):
+        
+        #temporary placeholder variable
+        self.collisionbox = [self.surface.get_height(),0,0,self.surface.get_width()]
+        
+        
+    
+    
+    def gravityticknew(self,subject,collideoutput):
+        pygame.draw.rect(subject.surface,'green',(0,520,800,2))
         #pygame.draw.rect(subject.surface,'green',(0,height,800,2))
         #applies gravity value each tick
         subject.velocity = (subject.velocity[0],subject.velocity[1]+self.gravity)
@@ -30,17 +33,32 @@ class Gravity:
         
         
         #checks if meeting floor
-        #position is set to top-left, corrects this to be at the bottom of sprite
-        if subject.position[1]+subject.image.get_height() < height:
-            subject.onground = False
+        if collideoutput:
+            subject.onground = True 
+            #print(subject.rect.right)
+            #print(collideoutput[0].rect.left)
+            #look i don't know how this shit works, it just does ok
+            if subject.velocity[1] == self.gravity:
+                subject.velocity = (subject.velocity[0],0)
+            if subject.rect.bottom >= collideoutput[0].rect.top-1:
+                subject.position = (subject.position[0],(collideoutput[0].position[1]-subject.image.get_height())+1)
+                #print("Top")
+                #print("other")
+            else:
+                if subject.rect[0]+subject.rect[3] == collideoutput[0].rect[0]:
+                    print("hit side")
+                #subject.velocity = (0,subject.velocity[1])
         else:
-            subject.onground = True
-            #honestly don't know why this is needed but it works
-            subject.velocity = (subject.velocity[0],subject.velocity[1]-self.gravity)
-            #snaps player position to be ontop of floor
-            subject.position = (subject.position[0],height-subject.image.get_height())
+            self.collisionbox = [self.surface.get_height(),0,0,self.surface.get_width()]
+            subject.onground = False
+        
+        if subject.position[1] > self.surface.get_height():
+            #print("hit")
+            subject.position = (10,300)
+        subject.position = (subject.position[0] + subject.velocity[0], subject.position[1] + subject.velocity[1]) 
+        
 
-        return subject.velocity, subject.onground
+        return subject.velocity, subject.position, subject.onground
     
     
     

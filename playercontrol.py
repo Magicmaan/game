@@ -3,14 +3,17 @@ import spritesheet
 import pygame
 import math
 from game import gameClass
-from gravity import Gravity
+#from gravity import Gravity
+from collision import collision
 
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, velocity_x, velocity_y, surface):
+    def __init__(self, x, y, velocity_x, velocity_y,initiateClass):
         super().__init__()
         self.surface = pygame.display.get_surface()
+        self.initiateClass = initiateClass
+        
         
         #sprite assignment
         ss = spritesheet.spritesheet('textures/player/playersprites.png',self.surface)
@@ -32,12 +35,13 @@ class Player(pygame.sprite.Sprite):
         self.onground = True
         self.crouching = False
 
-        self.Gravity = Gravity()
+        #self.Gravity = Gravity()
+        #self.collision = collision()
         self.flip = 0
         
         #acceleration values
         self.movedecayaccelX = round(self.surface.get_width()/60)
-        self.movedecayaccelY = round(self.surface.get_height()/6)
+        self.movedecayaccelY = round(self.surface.get_height()/10)
         #12
         self.movedecaymaxX = self.movedecayaccelX * 3
         self.movedecaymaxY = self.movedecayaccelX * 10
@@ -100,6 +104,7 @@ class Player(pygame.sprite.Sprite):
         
         #updates rect to match sprite
         self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(),self.image.get_height())
+        #self.rect.bottom = self.position[1]+self.image.get_height()
         
 
         
@@ -112,43 +117,87 @@ class Player(pygame.sprite.Sprite):
         return self.imageraw
     
     def update(self): 
+        global collideoutput
         #updates position and collision
         self.tick = gameClass.gettick()
         
         
-        #movementX decay logic
-        #rounds to max speed if exceeds
-        if self.velocity[0] > self.movedecaymaxX: 
-            self.velocity = (self.movedecaymaxX, self.velocity[1])
-        if self.velocity[0] < -abs(self.movedecaymaxX):
-            self.velocity = (-abs(self.movedecaymaxX), self.velocity[1])
-            
-        #decay movement rate, seperate value for air time
-        if self.onground == True:
-            self.velocity = (self.velocity[0]/self.movedecayeaseX, self.velocity[1])
-        else:
-            self.velocity = (self.velocity[0]/(self.movedecayeaseX/1.2), self.velocity[1])
-
-        #prevents X movement if crouching
-        if self.crouching == True:
-            if self.onground == True:
-                self.velocity = (0,self.velocity[1])
-            else:
-                self.velocity = (self.velocity[0]/2,self.velocity[1])
         
-        #floors value if near 1
-        if math.isclose(self.velocity[0],0,abs_tol = 1.0): 
-            self.velocity = (0,self.velocity[1])
-
+        Player.velocitylogic(self)
         Player.image_update(self)
         #gravity check
         
+        #self.collision.collidecheck()
+        
+        
+        #collideoutput = collision.collidecheck(self,self.initiateClass.floorgroup)
+        #self.velocity,self.position,self.onground = self.Gravity.gravityticknew(self,collideoutput)
+        
+        
+        
+        #print(self.velocity)
+        
         
         #sets position
-        self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1]) 
-        self.velocity,self.onground = self.Gravity.gravitytick(self)
+        
+        
+        
         self.crouching = False
+        
         self.mask = pygame.mask.from_surface(self.image)
+        
+        self.gravity =  self.surface.get_height()/27
+        subject2 = self.initiateClass.floorgroup
+
+        
+        
+        self.velocity = (self.velocity[0],self.velocity[1]+self.gravity)
+        if self.velocity[1] > self.gravity:
+            self.velocity = (self.velocity[0],self.gravity)
+        
+        """hit = False
+        
+        
+        for x in subject2:  
+            if self.rect.colliderect(x.rect) == True:
+                hit = True
+                bean = x    
+                
+        if hit == True:
+            
+            #self.velocity = (0,self.velocity[1])
+            
+            if self.jumping == False:
+                if self.velocity[1] > 0:
+                    self.onground = True
+                    self.velocity = (self.velocity[0],self.velocity[1]-self.gravity)
+                    if self.rect.bottom >= bean.rect.top+1:
+                        self.position = (self.position[0], self.position[1] - (self.rect.bottom-bean.rect.top)+1)
+                        self.velocity = (self.velocity[0],0)
+            
+            
+
+        else:
+            self.onground = False"""
+                        #self.position = (self.position[0],x.rect.top-(self.rect.bottom-x.rect.top))
+        
+        collision.collidecheck(self,self.initiateClass.floorgroup)
+
+
+        self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1]) 
+        self.jumping = False
+        
+                
+        
+        
+        
+        
+        
+        
+        
+        
+        #print(self.position)
+       #print(self.velocity)
         
         
         
@@ -165,6 +214,9 @@ class Player(pygame.sprite.Sprite):
         #jump movement, only if on ground
         if movedecayY != 0 and self.onground == True:
             self.velocity = (self.velocity[0], self.velocity[1] + movedecayY*self.movedecayaccelY)   
+            self.jumping == True
+        else:
+            self.jumping == False
             
         #crouching check
         if movedecayY > 0:
@@ -177,3 +229,33 @@ class Player(pygame.sprite.Sprite):
             self.velocity = (self.velocity[0] + movedecayX*self.movedecayaccelX, self.velocity[1])
         else:
             self.velocity = (self.velocity[0] + movedecayX*(self.movedecayaccelX/1.5), self.velocity[1])
+        
+    def velocitylogic(self):
+        #movementX decay logic
+        #rounds to max speed if exceeds
+        if self.velocity[0] > self.movedecaymaxX: 
+            self.velocity = (self.movedecaymaxX, self.velocity[1])
+        if self.velocity[0] < -abs(self.movedecaymaxX):
+            self.velocity = (-abs(self.movedecaymaxX), self.velocity[1])
+            
+        #decay movement rate, seperate value for air time
+        if self.onground == True:
+            
+            self.velocity = (self.velocity[0]/self.movedecayeaseX, self.velocity[1])
+        else:
+            self.velocity = (self.velocity[0]/(self.movedecayeaseX/1.2), self.velocity[1])
+
+
+        #prevents X movement if crouching
+        if self.crouching == True:
+            if self.onground == True:
+                self.velocity = (0,self.velocity[1])
+            else:
+                self.velocity = (self.velocity[0]/2,self.velocity[1])
+        
+        #floors value if near 1
+        if math.isclose(self.velocity[0],0,abs_tol = 1.0): 
+            self.velocity = (0,self.velocity[1])
+        
+        
+        
