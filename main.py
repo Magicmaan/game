@@ -33,7 +33,7 @@ tick = 0
 
     
 initiate = initiateClass()
-
+    
 
 player = initiate.player
 floorgroup = initiate.floorgroup
@@ -46,7 +46,6 @@ while True:
     window.fill("white")
     
     # Handle events
-    
     
    
     
@@ -69,11 +68,10 @@ while True:
     
     
     
-    player.update()
-    player.draw()
+    playergroup.update()
+    playergroup.draw(window)
     
-    
-    #print(pygame.sprite.spritecollide(player,floorgroup,False))
+
     
     
     

@@ -9,7 +9,7 @@ import pygame
 from playercontrol import Player as Playerclass
 
 from floorcontrol import Floor
-import guncontrol
+from guncontrol import gunClass
 from collision import collision
 
 
@@ -22,11 +22,12 @@ class initiateClass:
         
         self.playergroup = pygame.sprite.Group()
         
-        self.player = Playerclass(0,0,0,0,self)
+        self.player = Playerclass(30,0,0,0,self)
 
-        #self.gun = guncontrol.gunClass(0,0,0,0,self)
+        self.gun = gunClass(0,0,0,0,self)
         
         self.playergroup.add(self.player)
+        self.playergroup.add(self.gun)
 
         
         self.floorgroup = pygame.sprite.Group()
@@ -40,7 +41,7 @@ class initiateClass:
         f1.position = (0,self.surface.get_height()-f1.image.get_height()-60)
         
         f2 = Floor(0,0)
-        f2.position = (480,self.surface.get_height()-f1.image.get_height()-60)
+        f2.position = (200,self.surface.get_height()-f1.image.get_height()-156)
         self.floorgroup.add(f1)
         self.floorgroup.add(f2)
     def spritelist(self):

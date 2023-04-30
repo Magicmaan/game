@@ -47,6 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.movedecaymaxY = self.movedecayaccelX * 10
         
         self.movedecayeaseX = self.movedecayaccelX / 9
+
         
         
         self.rect = self.image.get_rect()
@@ -90,7 +91,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.flip(self.image,self.flip,0)
         self.image = pygame.transform.scale(self.image,(x,y))
         
-        
+        self.initiateClass.gun.imageupdate(self.direction,self.flip,self.spritestate)
         
         #animation control, sets when to change sprite every frame
         if self.direction == self.idlesprites:
@@ -125,83 +126,18 @@ class Player(pygame.sprite.Sprite):
         
         Player.velocitylogic(self)
         Player.image_update(self)
-        #gravity check
-        
-        #self.collision.collidecheck()
-        
-        
-        #collideoutput = collision.collidecheck(self,self.initiateClass.floorgroup)
-        #self.velocity,self.position,self.onground = self.Gravity.gravityticknew(self,collideoutput)
-        
-        
-        
-        #print(self.velocity)
-        
-        
-        #sets position
         
         
         
         self.crouching = False
-        
-        self.mask = pygame.mask.from_surface(self.image)
-        
-        self.gravity =  self.surface.get_height()/27
-        subject2 = self.initiateClass.floorgroup
 
         
+        self.position,self.velocity,self.onground = collision.collidecheck(self,self.initiateClass.floorgroup)
         
-        self.velocity = (self.velocity[0],self.velocity[1]+self.gravity)
-        if self.velocity[1] > self.gravity:
-            self.velocity = (self.velocity[0],self.gravity)
-        
-        """hit = False
-        
-        
-        for x in subject2:  
-            if self.rect.colliderect(x.rect) == True:
-                hit = True
-                bean = x    
-                
-        if hit == True:
-            
-            #self.velocity = (0,self.velocity[1])
-            
-            if self.jumping == False:
-                if self.velocity[1] > 0:
-                    self.onground = True
-                    self.velocity = (self.velocity[0],self.velocity[1]-self.gravity)
-                    if self.rect.bottom >= bean.rect.top+1:
-                        self.position = (self.position[0], self.position[1] - (self.rect.bottom-bean.rect.top)+1)
-                        self.velocity = (self.velocity[0],0)
-            
-            
-
-        else:
-            self.onground = False"""
-                        #self.position = (self.position[0],x.rect.top-(self.rect.bottom-x.rect.top))
-        
-        collision.collidecheck(self,self.initiateClass.floorgroup)
 
 
         self.position = (self.position[0] + self.velocity[0], self.position[1] + self.velocity[1]) 
         self.jumping = False
-        
-                
-        
-        
-        
-        
-        
-        
-        
-        
-        #print(self.position)
-       #print(self.velocity)
-        
-        
-        
-        
 
         
 
@@ -212,7 +148,7 @@ class Player(pygame.sprite.Sprite):
     
     def playervelocity(self,movedecayX, movedecayY):
         #jump movement, only if on ground
-        if movedecayY != 0 and self.onground == True:
+        if self.onground == True:
             self.velocity = (self.velocity[0], self.velocity[1] + movedecayY*self.movedecayaccelY)   
             self.jumping == True
         else:
